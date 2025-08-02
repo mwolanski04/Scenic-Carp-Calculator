@@ -20,6 +20,8 @@ const App = () => {
     sign: "",
     num: 0,
     res: 0,
+    in: 0,
+    inRes: 0
   });
 
   let [fraction, setFraction] = useState({
@@ -28,7 +30,7 @@ const App = () => {
   });
 
   const clearCalc = () => {
-    setCalc({sign: "+", num: 0, res: 0, isFt: calc.isFt});
+    setCalc({sign: "+", num: 0, res: 0,in: 0, inRes:0, isFt: calc.isFt});
     setFraction({num: 0, res:0})
 
   }
@@ -37,27 +39,59 @@ const App = () => {
     setCalc({
       sign: btn,
       res: !calc.res && calc.num ? calc.num : calc.res,
+      inRes: !calc.inRes && calc.in ? calc.in : calc.inRes,
+      in:0,
       num:0,
+      isFt: calc.isFt
     })
   }
 
   const equalsClick = () => {
     var out = 0
-    if (calc.sign && calc.num) {
-      var a = Number(calc.res)
-      var b = Number(calc.num)
-      calc.sign === "+"
-      ? out = a + b
-      : calc.sign === "-"
-      ? out = a - b
-      : calc.sign === "x"
-      ? out = a * b
-      : out = a / b
+    var out2 = 0
+
+    if (calc.sign) {
+      var x = Number(calc.res)
+      var y = Number(calc.num)
+      var a = Number(calc.inRes)
+      var b = Number(calc.in)
+      if  (calc.sign === "+") {
+        out = x + y
+        out2 = a + b
+      } 
+      else if (calc.sign === "-") {
+        out = x - y
+        out2 = a - b
+      }
+      else if (calc.sign === "X") {
+        out = x * y
+        out2 = x * b
+      }
+      else {
+       if ( b === 0 || y === 0) {
+        out = 0
+        out2 = 0
+       }
+       else {
+        out = x / y
+        out2 = a / b
+       }
+      }
     }
+
+    if (out2 >= 12)
+      for (let i = 0; i < Math.floor(out2 / 12); i++) {
+        out2 -= 12
+        out += 1
+      }
+   
     setCalc({
       res: out,
+      inRes: out2,
       sign: "",
       num:0,
+      in:0,
+      isFt:calc.isFt
     })
 
   }
@@ -73,7 +107,10 @@ const App = () => {
         num: calc.num != 0
         ? calc.num * - 1
         : 0,
-        res: calc.res
+        in: calc.in,
+        res: calc.res,
+        inRes: calc.inRes,
+        isFt: calc.isFt
 
       })
     }
@@ -95,11 +132,10 @@ const App = () => {
     }
 
     const ftAndInClick = () => {
-      setCalc({num: calc.num, isFt: !calc.isFt, res: calc.res})
+      setCalc({sign: calc.sign, num: calc.num, isFt: !calc.isFt, res: calc.res, in: calc.in, inRes: calc.inRes})
     }
 
   const numAdd = (value) => {
-
 
      if ( calc.isFt) {
       setCalc({
@@ -111,23 +147,31 @@ const App = () => {
           ? calc.num = value
           : calc.num.toString() + value,
         res: !calc.sign ? 0 : calc.res,
+
       });
 
      }
      else {
       setCalc({
-        
-      })
+        ...calc,
+        in:
+          calc.in === 0 && value === "0"
+          ? "0"
+          : calc.in === 0
+          ? calc.in = value
+          :  calc.in.toString() + value,
+        inRes: !calc.sign ? 0 : calc.inRes
+
+      });
      }
       
   }
   return (
     <Wrapper>
   
-      <Screen value={calc.num ? calc.num + " ' " : calc.res + " ' "} 
-      value2={fraction.num + '"'} isFt = {calc.isFt}
+      <Screen value={calc.num ? calc.num : calc.res } 
+      value2={calc.in ? calc.in : calc.inRes} isFt = {calc.isFt}
       />
-      
       <ButtonBox>
         {btnValues.flat().map((btn, i) => {
             return (

@@ -6,10 +6,10 @@ const Screen = ({ value, value2, isFt}) => {
     return (
     <>
     <Textfit className="selected" mode="single" max={70}>
-        {value} 
+        {value}'
     </Textfit>
     <Textfit className="screen" mode="single" max={70}>
-       {value2} 
+       {value2}"
     </Textfit>
     </>
   );
@@ -18,10 +18,10 @@ const Screen = ({ value, value2, isFt}) => {
     return (
      <>
     <Textfit className="screen" mode="single" max={70}>
-        {value} 
+        {value}' 
     </Textfit>
     <Textfit className="selected" mode="single" max={70}>
-       {value2} 
+       {value2}" 
     </Textfit>
     </>
     );
